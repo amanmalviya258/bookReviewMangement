@@ -433,11 +433,24 @@ const updateAccountDetails = asyncHandler(async (req, res) => {
 
 const deleteUser = asyncHandler(async (req, res) => {
   try {
-    const userId = req.user._id;
+    const { username } = req.body;
+    const currentUser = req.user; // This comes from verifyJWT middleware
+
+    if (!username) {
+      throw new ApiError(400, "Username confirmation required", [
+        { field: "username", message: "Please provide your username to confirm deletion" }
+      ]);
+    }
+
+    // Verify that the username matches the logged-in user
+    if (username !== currentUser.username) {
+      throw new ApiError(403, "Unauthorized deletion", [
+        { message: "You can only delete your own account" }
+      ]);
+    }
 
     // Find and delete the user
-    const deletedUser = await User.findByIdAndDelete(userId);
-
+    const deletedUser = await User.findByIdAndDelete(currentUser._id);
     if (!deletedUser) {
       throw new ApiError(404, "User not found", [
         { message: "Failed to delete user" }
