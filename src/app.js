@@ -7,12 +7,12 @@ import { asyncHandler } from "./utils/asyncHandler.js";
 const app = express();
 
 // Request logging middleware
-// app.use((req, res, next) => {
-//    // console.log(`Request received: ${req.method} ${req.url}`);
-// //console.log('Headers:', req.headers);
-//   //  console.log('Body:', req.body);
-//     next();
-// });
+app.use((req, res, next) => {
+    console.log(`Request received: ${req.method} ${req.url}`);
+    console.log('Headers:', req.headers);
+    console.log('Body:', req.body);
+    next();
+});
 
 // Middleware
 app.use(
@@ -32,10 +32,12 @@ app.use(express.static("public"));
 //routes
 import healthCheckerRouter from "./routes/health.route.js";
 import userRouter from "./routes/user.route.js";
+import bookRouter from "./routes/book.route.js";
 
 //routes declaration
 app.use("/api/v1", healthCheckerRouter);
 app.use("/api/v1/users", userRouter);
+app.use("/api/v1/books", bookRouter);
 
 // Global error handler should be last
 app.use(globalErrorHandler);
