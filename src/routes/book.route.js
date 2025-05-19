@@ -1,6 +1,6 @@
 import { Router } from "express";
 import {
-  addBook,
+  createBook,
   getAllBooks,
   getBookById,
   addReview,
@@ -18,7 +18,7 @@ router.route("/search").get(searchBooks);
 router.route("/:id").get(getBookById);
 
 // Protected routes
-router.route("/").post(verifyJWT, addBook);
+router.route("/").post(verifyJWT, createBook);
 router.route("/:id/reviews").post(verifyJWT, addReview);
 router.route("/reviews/:id").put(verifyJWT, updateReview);
 router.route("/reviews/:id").delete(verifyJWT, deleteReview);

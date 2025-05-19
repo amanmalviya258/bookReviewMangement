@@ -7,23 +7,23 @@ import { asyncHandler } from "../utils/asyncHandler.js";
 
 const generateAccessAndRefereshToken = async (userID) => {
   try {
-    console.log("Generating tokens for userID:", userID);
+    //console.log("Generating tokens for userID:", userID);
     const user = await User.findById(userID);
     if (!user) {
       throw new ApiError(404, "User not found");
     }
 
     const accessToken = await user.generateAccessToken();
-    console.log("Access token generated:", accessToken);
+   // console.log("Access token generated:", accessToken);
     
     const refreshToken = await user.generateRefreshToken();
-    console.log("Refresh token generated:", refreshToken);
+   // console.log("Refresh token generated:", refreshToken);
 
     user.refreshToken = refreshToken;
     await user.save({ validateBeforeSave: false });
 
     const tokens = { accessToken, refreshToken };
-    console.log("Returning tokens:", tokens);
+    //console.log("Returning tokens:", tokens);
     return tokens;
   } catch (error) {
     console.error("Token generation error:", error);
@@ -39,7 +39,7 @@ const generateAccessAndRefereshToken = async (userID) => {
 const registerUser = asyncHandler(async (req, res) => {
   try {
     const { username, email, fullName, password } = req.body;
-    console.log("Request body:", req.body);
+   // console.log("Request body:", req.body);
 
     if (!req.body) {
       throw new ApiError(400, "Request body is missing");
@@ -144,7 +144,7 @@ const loginUser = asyncHandler(async (req, res) => {
     }
   
     const tokens = await generateAccessAndRefereshToken(user._id);
-    console.log("Received tokens in login:", tokens);
+   // console.log("Received tokens in login:", tokens);
 
     const loggedInUser = await User.findById(user._id)
       .select("-password -refreshToken");

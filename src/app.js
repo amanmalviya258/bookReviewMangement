@@ -7,12 +7,12 @@ import { asyncHandler } from "./utils/asyncHandler.js";
 const app = express();
 
 // Request logging middleware
-app.use((req, res, next) => {
-    console.log(`Request received: ${req.method} ${req.url}`);
-    console.log('Headers:', req.headers);
-    console.log('Body:', req.body);
-    next();
-});
+// app.use((req, res, next) => {
+//     console.log(`Request received: ${req.method} ${req.url}`);
+//     console.log('Headers:', req.headers);
+//     console.log('Body:', req.body);
+//     next();
+// });
 
 // Middleware
 app.use(

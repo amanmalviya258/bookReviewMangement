@@ -24,6 +24,6 @@ router.route("/logout").post(verifyJWT, logOutUser);                       //che
 router.route("/update-account").patch(verifyJWT, updateAccountDetails);    //checked
 router.route("/change-password").post(verifyJWT, changeCurrentPassword);   //checked
 router.route("/current-user").get(verifyJWT, getCurrentUser);              //checked
-router.route("/delete").delete(verifyJWT, deleteUser);                     
+router.route("/delete").delete(verifyJWT, deleteUser);                     //checked 
 
 export default router;

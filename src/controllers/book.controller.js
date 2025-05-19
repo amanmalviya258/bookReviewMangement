@@ -3,8 +3,10 @@ import { ApiResponse } from "../utils/ApiResponse.js";
 import { Book } from "../models/book.model.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 
+//-------------------------------------------------------------------------------------
+
 // Add a new book
-const addBook = asyncHandler(async (req, res) => {
+const createBook = asyncHandler(async (req, res) => {
   try {
     const { title, author, genre, description } = req.body;
 
@@ -13,7 +15,7 @@ const addBook = asyncHandler(async (req, res) => {
         { field: "title", message: "Title is required" },
         { field: "author", message: "Author is required" },
         { field: "genre", message: "Genre is required" },
-        { field: "description", message: "Description is required" }
+        { field: "description", message: "Description is required" },
       ]);
     }
 
@@ -21,14 +23,14 @@ const addBook = asyncHandler(async (req, res) => {
       title,
       author,
       genre,
-      description
+      description,
     });
 
     const response = new ApiResponse({
       statusCode: 201,
       success: true,
       message: "Book added successfully",
-      data: book
+      data: book,
     });
 
     return res.status(201).json(response);
@@ -40,21 +42,34 @@ const addBook = asyncHandler(async (req, res) => {
   }
 });
 
+//-------------------------------------------------------------------------------------
+
 // Get all books with pagination and filters
 const getAllBooks = asyncHandler(async (req, res) => {
   try {
     const { page = 1, limit = 10, author, genre } = req.query;
-    const query = {};
+    const filterOptions = {};
 
-    if (author) query.author = new RegExp(author, 'i');
-    if (genre) query.genre = new RegExp(genre, 'i');
+    // Build filter conditions
+    const filterConditions = [];
+    if (author) {
+      filterConditions.push({ author: { $regex: author, $options: "i" } });
+    }
+    if (genre) {
+      filterConditions.push({ genre: { $regex: genre, $options: "i" } });
+    }
 
-    const books = await Book.find(query)
+    // Apply filters if any exist
+    if (filterConditions.length > 0) {
+      filterOptions.$and = filterConditions;
+    }
+
+    const books = await Book.find(filterOptions)
       .limit(limit * 1)
       .skip((page - 1) * limit)
       .sort({ createdAt: -1 });
 
-    const total = await Book.countDocuments(query);
+    const total = await Book.countDocuments(filterOptions);
 
     const response = new ApiResponse({
       statusCode: 200,
@@ -64,8 +79,8 @@ const getAllBooks = asyncHandler(async (req, res) => {
         books,
         totalPages: Math.ceil(total / limit),
         currentPage: page,
-        totalBooks: total
-      }
+        totalBooks: total,
+      },
     });
 
     return res.status(200).json(response);
@@ -76,6 +91,8 @@ const getAllBooks = asyncHandler(async (req, res) => {
     throw new ApiError(500, "Failed to fetch books", [error.message]);
   }
 });
+
+//-------------------------------------------------------------------------------------
 
 // Get book by ID
 const getBookById = asyncHandler(async (req, res) => {
@@ -102,8 +119,8 @@ const getBookById = asyncHandler(async (req, res) => {
         reviews,
         totalReviews: book.reviews.length,
         currentPage: page,
-        totalPages: Math.ceil(book.reviews.length / limit)
-      }
+        totalPages: Math.ceil(book.reviews.length / limit),
+      },
     });
 
     return res.status(200).json(response);
@@ -115,6 +132,7 @@ const getBookById = asyncHandler(async (req, res) => {
   }
 });
 
+//-------------------------------------------------------------------------------------
 // Add review to book
 const addReview = asyncHandler(async (req, res) => {
   try {
@@ -138,7 +156,7 @@ const addReview = asyncHandler(async (req, res) => {
     book.reviews.push({
       user: userId,
       rating,
-      comment
+      comment,
     });
 
     await book.save();
@@ -147,7 +165,7 @@ const addReview = asyncHandler(async (req, res) => {
       statusCode: 201,
       success: true,
       message: "Review added successfully",
-      data: book
+      data: book,
     });
 
     return res.status(201).json(response);
@@ -158,6 +176,8 @@ const addReview = asyncHandler(async (req, res) => {
     throw new ApiError(500, "Failed to add review", [error.message]);
   }
 });
+
+//-------------------------------------------------------------------------------------
 
 // Update review
 const updateReview = asyncHandler(async (req, res) => {
@@ -171,7 +191,7 @@ const updateReview = asyncHandler(async (req, res) => {
     }
 
     const book = await Book.findOne({
-      "reviews._id": id
+      "reviews._id": id,
     });
 
     if (!book) {
@@ -195,7 +215,7 @@ const updateReview = asyncHandler(async (req, res) => {
       statusCode: 200,
       success: true,
       message: "Review updated successfully",
-      data: book
+      data: book,
     });
 
     return res.status(200).json(response);
@@ -207,14 +227,16 @@ const updateReview = asyncHandler(async (req, res) => {
   }
 });
 
+//-------------------------------------------------------------------------------------
 // Delete review
+
 const deleteReview = asyncHandler(async (req, res) => {
   try {
     const { id } = req.params;
     const userId = req.user._id;
 
     const book = await Book.findOne({
-      "reviews._id": id
+      "reviews._id": id,
     });
 
     if (!book) {
@@ -236,7 +258,7 @@ const deleteReview = asyncHandler(async (req, res) => {
     const response = new ApiResponse({
       statusCode: 200,
       success: true,
-      message: "Review deleted successfully"
+      message: "Review deleted successfully",
     });
 
     return res.status(200).json(response);
@@ -247,6 +269,8 @@ const deleteReview = asyncHandler(async (req, res) => {
     throw new ApiError(500, "Failed to delete review", [error.message]);
   }
 });
+
+//-------------------------------------------------------------------------------------
 
 // Search books
 const searchBooks = asyncHandler(async (req, res) => {
@@ -259,9 +283,9 @@ const searchBooks = asyncHandler(async (req, res) => {
 
     const searchQuery = {
       $or: [
-        { title: new RegExp(query, 'i') },
-        { author: new RegExp(query, 'i') }
-      ]
+        { title: new RegExp(query, "i") },
+        { author: new RegExp(query, "i") },
+      ],
     };
 
     const books = await Book.find(searchQuery)
@@ -279,8 +303,8 @@ const searchBooks = asyncHandler(async (req, res) => {
         books,
         totalPages: Math.ceil(total / limit),
         currentPage: page,
-        totalBooks: total
-      }
+        totalBooks: total,
+      },
     });
 
     return res.status(200).json(response);
@@ -293,11 +317,11 @@ const searchBooks = asyncHandler(async (req, res) => {
 });
 
 export {
-  addBook,
+  createBook,
   getAllBooks,
   getBookById,
   addReview,
   updateReview,
   deleteReview,
-  searchBooks
-}; 
+  searchBooks,
+};
