@@ -13,14 +13,14 @@ import { verifyJWT } from "../middlewares/auth.middleware.js";
 const router = Router();
 
 // Public routes
-router.route("/").get(getAllBooks);
-router.route("/search").get(searchBooks);
-router.route("/:id").get(getBookById);
+router.route("/").get(getAllBooks);          //checked
+router.route("/search").get(searchBooks);    //checked
+router.route("/:id").get(getBookById);      //checked 
 
 // Protected routes
-router.route("/").post(verifyJWT, createBook);
-router.route("/:id/reviews").post(verifyJWT, addReview);
-router.route("/reviews/:id").put(verifyJWT, updateReview);
-router.route("/reviews/:id").delete(verifyJWT, deleteReview);
+router.route("/").post(verifyJWT, createBook);   //checked
+router.route("/:id/reviews").post(verifyJWT, addReview);  //checked
+router.route("/reviews/:id").put(verifyJWT, updateReview);  //checked
+router.route("/reviews/:id").delete(verifyJWT, deleteReview);  //checked
 
 export default router; 

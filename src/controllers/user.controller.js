@@ -5,6 +5,9 @@ import emailValidator from "node-email-verifier";
 import jwt from "jsonwebtoken";
 import { asyncHandler } from "../utils/asyncHandler.js";
 
+
+//-------------------------------------------------------------------------------------
+
 const generateAccessAndRefereshToken = async (userID) => {
   try {
     //console.log("Generating tokens for userID:", userID);
