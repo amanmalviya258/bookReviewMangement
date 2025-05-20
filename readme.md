@@ -28,7 +28,7 @@ src/
 ### Prerequisites
 - Node.js (v14 or higher)
 - MongoDB
-- npm or yarn
+- npm
 
 ### Installation
 
@@ -262,15 +262,3 @@ Run tests using:
 ```bash
 npm test
 ```
-
-##  License
-
-This project is licensed under the MIT License.
-
-##  Contributing
-
-1. Fork the repository
-2. Create your feature branch
-3. Commit your changes
-4. Push to the branch
-5. Create a Pull Request
