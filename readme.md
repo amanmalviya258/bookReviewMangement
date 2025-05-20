@@ -163,10 +163,9 @@ For a detailed visual representation of the system architecture, please visit:
 [System Architecture Diagram](https://app.eraser.io/workspace/DjL400jlioSvPkPR7Vji?origin=share)
 
 ### Data Modeling Diagram
-```
 For a detailed visual representation of data modeling and schema blueprint, please visit:
 [Data Modeling Diagram](https://app.eraser.io/workspace/AjkfnwCpqqlAERn07uC3?origin=share)
-```
+
 
 ### Project Structure
 ```
