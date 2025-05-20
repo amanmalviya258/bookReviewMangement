@@ -2,7 +2,7 @@
 
 A RESTful API for managing books and their reviews, built with Node.js, Express, and MongoDB.
 
-## 🏗️ Architecture
+##  Architecture
 
 ### Tech Stack
 - **Backend Framework**: Node.js with Express.js
@@ -23,7 +23,7 @@ src/
 └── app.js            # Application entry point
 ```
 
-## 🚀 Getting Started
+##  Getting Started
 
 ### Prerequisites
 - Node.js (v14 or higher)
@@ -64,7 +64,7 @@ REFRESH_TOKEN_EXPIRY=10d
 npm run dev
 ```
 
-## 📚 API Endpoints
+##  API Endpoints
 
 ### Authentication Endpoints
 
@@ -179,7 +179,7 @@ npm run dev
 - **Auth**: Required
 - **Headers**: `Authorization: Bearer <token>`
 
-## 🔒 Authentication
+##  Authentication
 
 The API uses JWT (JSON Web Tokens) for authentication. Protected routes require a valid JWT token in the Authorization header:
 
@@ -191,7 +191,7 @@ Authorization: Bearer <token>
 1. **Access Token**: Short-lived token for regular API access
 2. **Refresh Token**: Long-lived token for obtaining new access tokens
 
-## 📦 Data Models
+##  Data Models
 
 ### User Model
 ```javascript
@@ -225,7 +225,7 @@ Authorization: Bearer <token>
 }
 ```
 
-## 🔄 Response Format
+##  Response Format
 
 All API responses follow this format:
 ```json
@@ -243,31 +243,31 @@ All API responses follow this format:
 }
 ```
 
-## 🛠️ Error Handling
+##  Error Handling
 
 The API uses a centralized error handling system with custom error classes:
 - `ApiError`: Custom error class for API-specific errors
 - `ValidationError`: For input validation errors
 - `AuthenticationError`: For authentication-related errors
 
-## 🔍 Pagination
+##  Pagination
 
 All list endpoints support pagination with these parameters:
 - `page`: Page number (default: 1)
 - `limit`: Items per page (default: 10)
 
-## 🧪 Testing
+##  Testing
 
 Run tests using:
 ```bash
 npm test
 ```
 
-## 📝 License
+##  License
 
 This project is licensed under the MIT License.
 
-## 👥 Contributing
+##  Contributing
 
 1. Fork the repository
 2. Create your feature branch
