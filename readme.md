@@ -2,6 +2,153 @@
 
 A RESTful API for managing books and their reviews, built with Node.js, Express, and MongoDB.
 
+## Features
+
+- User authentication with JWT
+- Book management (CRUD operations)
+- Review system with validation
+- Search functionality
+- Pagination support
+
+## API Endpoints
+
+### Authentication
+- `POST /api/v1/users/register` - Register a new user
+- `POST /api/v1/users/login` - Login user
+- `POST /api/v1/users/logout` - Logout user
+- `POST /api/v1/users/refresh-token` - Refresh access token
+
+### Books
+- `POST /api/v1/books` - Create a new book (Protected)
+- `GET /api/v1/books` - Get all books (with pagination)
+- `GET /api/v1/books/:id` - Get book by ID
+- `GET /api/v1/books/search` - Search books by title or author
+
+### Reviews
+- `POST /api/v1/books/:id/reviews` - Add a review to a book (Protected)
+- `PUT /api/v1/books/reviews/:id` - Update a review (Protected)
+- `DELETE /api/v1/books/reviews/:id` - Delete a review (Protected)
+
+## Review System Rules
+
+### Adding Reviews
+- Users must be authenticated to add reviews
+- One review per user per book is allowed
+- Rating must be between 1 and 5
+- Comment is optional but must be less than 1000 characters
+- Required fields: rating
+
+### Updating Reviews
+- Users can only update their own reviews
+- At least one field (rating or comment) must be provided
+- Rating must be between 1 and 5
+- Comment must be less than 1000 characters
+- Review ID must be valid
+
+### Deleting Reviews
+- Users can only delete their own reviews
+- Review ID must be valid
+
+## Response Format
+
+### Success Response
+```json
+{
+  "success": true,
+  "message": "Operation successful message",
+  "data": {
+    // Response data
+  }
+}
+```
+
+### Error Response
+```json
+{
+  "success": false,
+  "message": "Error message",
+  "error": [
+    {
+      "field": "field_name",
+      "message": "Error description"
+    }
+  ]
+}
+```
+
+## Environment Variables
+
+Create a `.env` file in the root directory with the following variables:
+
+```env
+MONGODB_URI=your_mongodb_uri
+ACCESS_TOKEN_SECRET=your_access_token_secret
+REFRESH_TOKEN_SECRET=your_refresh_token_secret
+ACCESS_TOKEN_EXPIRY=1d
+REFRESH_TOKEN_EXPIRY=10d
+```
+
+For testing, create a `.env.test` file with:
+
+```env
+MONGODB_URI_TEST=mongodb://localhost:27017/bookReviewTest
+ACCESS_TOKEN_SECRET=test_access_token_secret_key_123
+REFRESH_TOKEN_SECRET=test_refresh_token_secret_key_456
+ACCESS_TOKEN_EXPIRY=1d
+REFRESH_TOKEN_EXPIRY=10d
+```
+
+## Installation
+
+1. Clone the repository
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
+3. Set up environment variables
+4. Start the server:
+   ```bash
+   npm start
+   ```
+
+## Testing
+
+Run tests with:
+```bash
+npm test
+```
+
+## Error Handling
+
+The API uses a consistent error handling format:
+- 400: Bad Request (validation errors)
+- 401: Unauthorized (authentication required)
+- 403: Forbidden (insufficient permissions)
+- 404: Not Found
+- 500: Internal Server Error
+
+## Security Features
+
+- JWT-based authentication
+- Password hashing
+- Protected routes
+- Input validation
+- Rate limiting
+- CORS enabled
+
+## Dependencies
+
+- express
+- mongoose
+- jsonwebtoken
+- bcryptjs
+- cors
+- dotenv
+- express-rate-limit
+- jest (for testing)
+- supertest (for testing)
+
+
 ##  Architecture
 
 ### Tech Stack

@@ -5,7 +5,7 @@ import { Review } from "../models/reviewSchema.model.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import mongoose from "mongoose";
 
-//-------------------------------------------------------------------------------------
+
 
 
 const createBook = asyncHandler(async (req, res) => {
@@ -44,7 +44,7 @@ const createBook = asyncHandler(async (req, res) => {
   }
 });
 
-//-------------------------------------------------------------------------------------
+
 
 
 const getAllBooks = asyncHandler(async (req, res) => {
@@ -52,7 +52,7 @@ const getAllBooks = asyncHandler(async (req, res) => {
     const { page = 1, limit = 10, author, genre } = req.query;
     const filterOptions = {};
 
-    // Build filter conditions
+  
     const filterConditions = [];
     if (author) {
       filterConditions.push({ author: { $regex: author, $options: "i" } });
@@ -61,7 +61,6 @@ const getAllBooks = asyncHandler(async (req, res) => {
       filterConditions.push({ genre: { $regex: genre, $options: "i" } });
     }
 
-    // Apply filters if any exist
     if (filterConditions.length > 0) {
       filterOptions.$and = filterConditions;
     }
@@ -94,7 +93,7 @@ const getAllBooks = asyncHandler(async (req, res) => {
   }
 });
 
-//-------------------------------------------------------------------------------------
+
 
 
 const getBookById = asyncHandler(async (req, res) => {
@@ -107,7 +106,6 @@ const getBookById = asyncHandler(async (req, res) => {
       throw new ApiError(404, "Book not found");
     }
 
-    // Get paginated reviews
     const startIndex = (page - 1) * limit;
     const endIndex = page * limit;
     const reviews = book.reviews.slice(startIndex, endIndex);
@@ -134,7 +132,7 @@ const getBookById = asyncHandler(async (req, res) => {
   }
 });
 
-//-------------------------------------------------------------------------------------
+
 
 const addReview = asyncHandler(async (req, res) => {
   try {
@@ -142,7 +140,6 @@ const addReview = asyncHandler(async (req, res) => {
     const { rating, comment } = req.body;
     const userId = req.user._id;
 
-    // Validate required fields
     if (!rating) {
       return res.status(400).json({
         success: false,
@@ -151,7 +148,6 @@ const addReview = asyncHandler(async (req, res) => {
       });
     }
 
-    // Validate rating range
     if (rating < 1 || rating > 5) {
       return res.status(400).json({
         success: false,
@@ -160,7 +156,6 @@ const addReview = asyncHandler(async (req, res) => {
       });
     }
 
-    // Validate comment length
     if (comment && comment.length > 1000) {
       return res.status(400).json({
         success: false,
@@ -169,7 +164,6 @@ const addReview = asyncHandler(async (req, res) => {
       });
     }
 
-    // Find book and check if it exists
     const book = await Book.findById(id).populate('reviews');
     if (!book) {
       return res.status(404).json({
@@ -178,7 +172,6 @@ const addReview = asyncHandler(async (req, res) => {
       });
     }
 
-    // Check if user has already reviewed this book
     const existingReview = await Review.findOne({
       user: userId,
       book: id
@@ -192,7 +185,6 @@ const addReview = asyncHandler(async (req, res) => {
       });
     }
 
-    // Double check in book's reviews array
     const hasReviewed = book.reviews.some(review => 
       review.user && review.user.toString() === userId.toString()
     );
@@ -205,7 +197,6 @@ const addReview = asyncHandler(async (req, res) => {
       });
     }
 
-    // Create new review
     const review = await Review.create({
       user: userId,
       book: id,
@@ -213,7 +204,6 @@ const addReview = asyncHandler(async (req, res) => {
       comment
     });
 
-    // Add review to book
     book.reviews.push(review._id);
     await book.save();
 
@@ -231,7 +221,7 @@ const addReview = asyncHandler(async (req, res) => {
   }
 });
 
-//-------------------------------------------------------------------------------------
+
 
 
 const updateReview = asyncHandler(async (req, res) => {
@@ -240,7 +230,6 @@ const updateReview = asyncHandler(async (req, res) => {
     const { rating, comment } = req.body;
     const userId = req.user._id;
 
-    // Validate review ID format
     if (!mongoose.Types.ObjectId.isValid(id)) {
       return res.status(400).json({
         success: false,
@@ -249,7 +238,6 @@ const updateReview = asyncHandler(async (req, res) => {
       });
     }
 
-    // Validate required fields
     if (!rating && !comment) {
       return res.status(400).json({
         success: false,
@@ -258,7 +246,6 @@ const updateReview = asyncHandler(async (req, res) => {
       });
     }
 
-    // Validate rating range if rating is provided
     if (rating !== undefined) {
       if (rating < 1 || rating > 5) {
         return res.status(400).json({
@@ -269,7 +256,6 @@ const updateReview = asyncHandler(async (req, res) => {
       }
     }
 
-    // Validate comment length if comment is provided
     if (comment && comment.length > 1000) {
       return res.status(400).json({
         success: false,
@@ -313,7 +299,7 @@ const updateReview = asyncHandler(async (req, res) => {
   }
 });
 
-//-------------------------------------------------------------------------------------
+
 
 
 const deleteReview = asyncHandler(async (req, res) => {
@@ -321,7 +307,7 @@ const deleteReview = asyncHandler(async (req, res) => {
     const { id } = req.params;
     const userId = req.user._id;
 
-    // Validate review ID format
+    
     if (!mongoose.Types.ObjectId.isValid(id)) {
       return res.status(400).json({
         success: false,
@@ -360,7 +346,7 @@ const deleteReview = asyncHandler(async (req, res) => {
   }
 });
 
-//-------------------------------------------------------------------------------------
+
 
 const searchBooks = asyncHandler(async (req, res) => {
   try {

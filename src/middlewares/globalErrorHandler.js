@@ -3,7 +3,7 @@ import { ApiResponse } from "../utils/ApiResponse.js";
 import mongoose from "mongoose";
 
 const globalErrorHandler = (err, req, res, next) => {
-  // Handle Mongoose validation errors
+  
   if (err instanceof mongoose.Error.ValidationError) {
     const errors = Object.values(err.errors).map(error => ({
       field: error.path,
@@ -24,7 +24,7 @@ const globalErrorHandler = (err, req, res, next) => {
     return ApiResponse.send(res, response);
   }
 
-  // Handle Mongoose duplicate key errors
+  
   if (err.code === 11000) {
     const field = Object.keys(err.keyPattern)[0];
     const response = new ApiResponse({
@@ -41,7 +41,7 @@ const globalErrorHandler = (err, req, res, next) => {
     return ApiResponse.send(res, response);
   }
 
-  // Handle JWT errors
+  
   if (err.name === 'JsonWebTokenError') {
     const response = new ApiResponse({
       statusCode: 401,
@@ -57,7 +57,7 @@ const globalErrorHandler = (err, req, res, next) => {
     return ApiResponse.send(res, response);
   }
 
-  // Handle JWT expiration errors
+  
   if (err.name === 'TokenExpiredError') {
     const response = new ApiResponse({
       statusCode: 401,
@@ -73,7 +73,7 @@ const globalErrorHandler = (err, req, res, next) => {
     return ApiResponse.send(res, response);
   }
 
-  // Handle custom ApiError instances
+  
   if (err instanceof ApiError) {
     const response = new ApiResponse({
       statusCode: err.statusCode,
@@ -89,7 +89,7 @@ const globalErrorHandler = (err, req, res, next) => {
     return ApiResponse.send(res, response);
   }
 
-  // Handle unhandled/unexpected errors
+  
   console.error('Unhandled Error:', err);
   const response = new ApiResponse({
     statusCode: 500,

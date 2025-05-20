@@ -4,7 +4,7 @@ const addReview = asyncHandler(async (req, res) => {
     const { rating, comment } = req.body;
     const userId = req.user._id;
 
-    // Validate required fields
+    
     if (!rating) {
       return res.status(400).json({
         success: false,
@@ -13,7 +13,7 @@ const addReview = asyncHandler(async (req, res) => {
       });
     }
 
-    // Validate rating range
+    
     if (rating < 1 || rating > 5) {
       return res.status(400).json({
         success: false,
@@ -22,7 +22,7 @@ const addReview = asyncHandler(async (req, res) => {
       });
     }
 
-    // Validate comment length
+    
     if (comment && comment.length > 1000) {
       return res.status(400).json({
         success: false,
@@ -31,7 +31,7 @@ const addReview = asyncHandler(async (req, res) => {
       });
     }
 
-    // Check if book exists
+    
     const book = await Book.findById(bookId);
     if (!book) {
       return res.status(404).json({
@@ -40,7 +40,7 @@ const addReview = asyncHandler(async (req, res) => {
       });
     }
 
-    // Check if user has already reviewed this book
+    
     const existingReview = await Review.findOne({
       book: bookId,
       user: userId
@@ -81,7 +81,7 @@ const updateReview = asyncHandler(async (req, res) => {
     const { rating, comment } = req.body;
     const userId = req.user._id;
 
-    // Validate review ID format
+    
     if (!mongoose.Types.ObjectId.isValid(reviewId)) {
       return res.status(400).json({
         success: false,
@@ -90,7 +90,7 @@ const updateReview = asyncHandler(async (req, res) => {
       });
     }
 
-    // Validate required fields
+    
     if (!rating && !comment) {
       return res.status(400).json({
         success: false,
@@ -99,7 +99,6 @@ const updateReview = asyncHandler(async (req, res) => {
       });
     }
 
-    // Validate rating range
     if (rating && (rating < 1 || rating > 5)) {
       return res.status(400).json({
         success: false,
@@ -108,7 +107,7 @@ const updateReview = asyncHandler(async (req, res) => {
       });
     }
 
-    // Validate comment length
+   
     if (comment && comment.length > 1000) {
       return res.status(400).json({
         success: false,
@@ -157,7 +156,7 @@ const deleteReview = asyncHandler(async (req, res) => {
     const { reviewId } = req.params;
     const userId = req.user._id;
 
-    // Validate review ID format
+
     if (!mongoose.Types.ObjectId.isValid(reviewId)) {
       return res.status(400).json({
         success: false,

@@ -37,7 +37,7 @@ const bookSchema = new Schema(
   }
 );
 
-// Calculate average rating before saving
+
 bookSchema.pre("save", function(next) {
   if (this.reviews.length > 0) {
     this.averageRating = this.reviews.reduce((acc, review) => acc + review.rating, 0) / this.reviews.length;
@@ -45,7 +45,7 @@ bookSchema.pre("save", function(next) {
   next();
 });
 
-// Method to check if user has already reviewed
+
 bookSchema.methods.hasUserReviewed = function(userId) {
   return this.reviews.some(review => review.user.toString() === userId.toString());
 };

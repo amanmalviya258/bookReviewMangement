@@ -45,12 +45,12 @@ describe('Review Tests', () => {
   }, 30000);
 
   beforeEach(async () => {
-    // Clear all collections
+    
     await User.deleteMany({});
     await Book.deleteMany({});
     await Review.deleteMany({});
 
-    // Register and login user
+    
     const registerResponse = await request(app)
       .post('/api/v1/users/register')
       .send(testUserData);
@@ -74,7 +74,7 @@ describe('Review Tests', () => {
 
     accessToken = loginResponse.body.data.accessToken;
 
-    // Create a test book
+    
     const bookResponse = await request(app)
       .post('/api/v1/books')
       .set('Authorization', `Bearer ${accessToken}`)
@@ -120,13 +120,13 @@ describe('Review Tests', () => {
     });
 
     it('should not allow multiple reviews from same user', async () => {
-      // Add first review
+      
       await request(app)
         .post(`/api/v1/books/${testBook._id}/reviews`)
         .set('Authorization', `Bearer ${accessToken}`)
         .send(testReviewData);
 
-      // Try to add second review
+      
       const response = await request(app)
         .post(`/api/v1/books/${testBook._id}/reviews`)
         .set('Authorization', `Bearer ${accessToken}`)
@@ -178,7 +178,7 @@ describe('Review Tests', () => {
         .set('Authorization', `Bearer ${accessToken}`)
         .send({
           rating: 5,
-          comment: 'a'.repeat(1001) // Assuming max length is 1000
+          comment: 'a'.repeat(1001) 
         });
 
       expect(response.status).toBe(400);
@@ -190,7 +190,7 @@ describe('Review Tests', () => {
     let reviewId;
 
     beforeEach(async () => {
-      // Add a review
+      
       const response = await request(app)
         .post(`/api/v1/books/${testBook._id}/reviews`)
         .set('Authorization', `Bearer ${accessToken}`)
@@ -240,7 +240,7 @@ describe('Review Tests', () => {
     });
 
     it('should not allow updating other users reviews', async () => {
-      // Create another user and their review
+      
       const anotherUser = await User.create({
         username: 'anotheruser',
         email: 'another@example.com',
@@ -293,7 +293,7 @@ describe('Review Tests', () => {
         .set('Authorization', `Bearer ${accessToken}`)
         .send({
           rating: 5,
-          comment: 'a'.repeat(1001) // Assuming max length is 1000
+          comment: 'a'.repeat(1001) 
         });
 
       expect(response.status).toBe(400);
@@ -305,7 +305,7 @@ describe('Review Tests', () => {
     let reviewId;
 
     beforeEach(async () => {
-      // Add a review
+      
       const response = await request(app)
         .post(`/api/v1/books/${testBook._id}/reviews`)
         .set('Authorization', `Bearer ${accessToken}`)
@@ -326,7 +326,7 @@ describe('Review Tests', () => {
       expect(response.status).toBe(200);
       expect(response.body.success).toBe(true);
 
-      // Verify review is deleted
+      
       const deletedReview = await Review.findById(reviewId);
       expect(deletedReview).toBeNull();
     });
@@ -349,7 +349,7 @@ describe('Review Tests', () => {
     });
 
     it('should not allow deleting other users reviews', async () => {
-      // Create another user and their review
+      
       const anotherUser = await User.create({
         username: 'anotheruser',
         email: 'another@example.com',

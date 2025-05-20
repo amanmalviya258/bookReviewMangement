@@ -26,25 +26,25 @@ describe('Book Tests', () => {
 
   beforeAll(async () => {
     await mongoose.connect(process.env.MONGODB_URI_TEST, {
-      serverSelectionTimeoutMS: 10000, // 10 seconds
-      socketTimeoutMS: 45000, // 45 seconds
+      serverSelectionTimeoutMS: 10000, 
+      socketTimeoutMS: 45000, 
     });
-  }, 30000); // 30 second timeout for the hook
+  }, 30000); 
 
   afterAll(async () => {
     await User.deleteMany({});
     await Book.deleteMany({});
     await Review.deleteMany({});
     await mongoose.disconnect();
-  }, 30000); // 30 second timeout for the hook
+  }, 30000); 
 
   beforeEach(async () => {
-    // Clear all collections
+    
     await User.deleteMany({});
     await Book.deleteMany({});
     await Review.deleteMany({});
 
-    // Register and login user
+    
     await request(app)
       .post('/api/v1/users/register')
       .send(testUserData);
@@ -93,13 +93,13 @@ describe('Book Tests', () => {
 
       expect(response.status).toBe(400);
       expect(response.body.success).toBe(false);
-      expect(response.body.error).toHaveLength(4); // title, author, genre, description
+      expect(response.body.error).toHaveLength(4); 
     });
   });
 
   describe('GET /api/v1/books', () => {
     beforeEach(async () => {
-      // Create some test books
+      
       await Book.create([
         testBookData,
         {
@@ -149,7 +149,7 @@ describe('Book Tests', () => {
 
   describe('GET /api/v1/books/search', () => {
     beforeEach(async () => {
-      // Create test books
+      
       await Book.create([
         testBookData,
         {
@@ -219,7 +219,7 @@ describe('Book Tests', () => {
     });
 
     it('should return paginated reviews', async () => {
-      // Add some reviews
+      
       const book = await Book.findById(bookId);
       const review1 = await Review.create({
         book: bookId,

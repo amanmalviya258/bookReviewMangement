@@ -5,7 +5,7 @@ import mongoose from "mongoose";
 
 const healthCheck = asyncHandler(async (req, res) => {
   try {
-    // Check system health
+    
     const state = mongoose.connection.readyState;
 
     const states = {

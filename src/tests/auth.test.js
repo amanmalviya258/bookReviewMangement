@@ -15,21 +15,21 @@ describe('Authentication Tests', () => {
   };
 
   beforeAll(async () => {
-    // Connect to test database with increased timeout and better options
+    
     await mongoose.connect(process.env.MONGODB_URI_TEST, {
-      serverSelectionTimeoutMS: 10000, // 10 seconds
-      socketTimeoutMS: 45000, // 45 seconds
+      serverSelectionTimeoutMS: 10000, 
+      socketTimeoutMS: 45000, 
     });
-  }, 30000); // 30 second timeout for the hook
+  }, 30000); 
 
   afterAll(async () => {
-    // Clean up and disconnect
+    
     await User.deleteMany({});
     await mongoose.disconnect();
-  }, 30000); // 30 second timeout for the hook
+  }, 30000); 
 
   beforeEach(async () => {
-    // Clear users before each test
+    
     await User.deleteMany({});
   });
 
@@ -47,12 +47,12 @@ describe('Authentication Tests', () => {
     });
 
     it('should not register user with existing email', async () => {
-      // First registration
+      
       await request(app)
         .post('/api/v1/users/register')
         .send(testUserData);
 
-      // Try to register again with same email
+      
       const response = await request(app)
         .post('/api/v1/users/register')
         .send(testUserData);
@@ -68,13 +68,13 @@ describe('Authentication Tests', () => {
 
       expect(response.status).toBe(400);
       expect(response.body.success).toBe(false);
-      expect(response.body.error).toHaveLength(4); // username, email, fullName, password
+      expect(response.body.error).toHaveLength(4); 
     });
   });
 
   describe('POST /api/v1/users/login', () => {
     beforeEach(async () => {
-      // Register a user before each test
+      
       await request(app)
         .post('/api/v1/users/register')
         .send(testUserData);
@@ -123,7 +123,7 @@ describe('Authentication Tests', () => {
     let accessToken;
 
     beforeEach(async () => {
-      // Register and login before each test
+      
       await request(app)
         .post('/api/v1/users/register')
         .send(testUserData);

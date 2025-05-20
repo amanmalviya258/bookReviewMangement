@@ -5,27 +5,27 @@ import jwt from "jsonwebtoken";
 import { asyncHandler } from "../utils/asyncHandler.js";
 
 
-//-------------------------------------------------------------------------------------
+
 
 const generateAccessAndRefereshToken = async (userID) => {
   try {
-    //console.log("Generating tokens for userID:", userID);
+    
     const user = await User.findById(userID);
     if (!user) {
       throw new ApiError(404, "User not found");
     }
 
     const accessToken = await user.generateAccessToken();
-   // console.log("Access token generated:", accessToken);
+   
     
     const refreshToken = await user.generateRefreshToken();
-   // console.log("Refresh token generated:", refreshToken);
+   
 
     user.refreshToken = refreshToken;
     await user.save({ validateBeforeSave: false });
 
     const tokens = { accessToken, refreshToken };
-    //console.log("Returning tokens:", tokens);
+    
     return tokens;
   } catch (error) {
     console.error("Token generation error:", error);
@@ -36,7 +36,7 @@ const generateAccessAndRefereshToken = async (userID) => {
   }
 };
 
-//-----------------------------------------------------------------------------
+
 
 const registerUser = asyncHandler(async (req, res) => {
   try {
@@ -46,7 +46,7 @@ const registerUser = asyncHandler(async (req, res) => {
       throw new ApiError(400, "Request body is missing");
     }
 
-    // Validation
+    
     if ([fullName, email, username, password].some(field => !field?.trim())) {
       throw new ApiError(400, "All fields are required", [
         { field: "fullName", message: "Full name is required" },
@@ -56,7 +56,7 @@ const registerUser = asyncHandler(async (req, res) => {
       ]);
     }
 
-    // Check existing user
+    
     const [existedUser, existedEmail] = await Promise.all([
       User.findOne({ username }),
       User.findOne({ email })
@@ -74,7 +74,7 @@ const registerUser = asyncHandler(async (req, res) => {
       ]);
     }
 
-    // Create user
+    
     const user = await User.create({
       fullName,
       email,
@@ -107,7 +107,7 @@ const registerUser = asyncHandler(async (req, res) => {
   }
 });
 
-//-----------------------------------------------------------------------------
+
 
 const loginUser = asyncHandler(async (req, res) => {
   try {
@@ -170,7 +170,7 @@ const loginUser = asyncHandler(async (req, res) => {
   }
 });
 
-//--------------------------------------------------------------------------------------------------
+
 const logOutUser = asyncHandler(async (req, res) => {
   try {
     await User.findByIdAndUpdate(
@@ -205,7 +205,7 @@ const logOutUser = asyncHandler(async (req, res) => {
   }
 });
 
-//-----------------------------------------------------------------------------------
+
 
 const refreshAccessToken = asyncHandler(async (req, res) => {
   try {
@@ -272,7 +272,7 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
   }
 });
 
-//------------------------------------------------------------
+
 
 const changeCurrentPassword = asyncHandler(async (req, res) => {
   try {
@@ -325,8 +325,8 @@ const changeCurrentPassword = asyncHandler(async (req, res) => {
   }
 });
 
-//-----------------------------------------------------------------------
-//runs after JWT verification -- protected route
+
+
 const getCurrentUser = asyncHandler(async (req, res) => {
   try {
     const response = new ApiResponse({
@@ -345,7 +345,7 @@ const getCurrentUser = asyncHandler(async (req, res) => {
   }
 });
 
-//-------------------------------------------------------------------------
+
 const updateAccountDetails = asyncHandler(async (req, res) => {
   try {
     const { fullName, email, username } = req.body;
@@ -422,12 +422,12 @@ const updateAccountDetails = asyncHandler(async (req, res) => {
   }
 });
 
-//-------------------------------------------------------------------------------------
+
 
 const deleteUser = asyncHandler(async (req, res) => {
   try {
     const { username } = req.body;
-    const currentUser = req.user; // This comes from verifyJWT middleware
+    const currentUser = req.user; 
 
     if (!username) {
       throw new ApiError(400, "Username confirmation required", [
@@ -435,14 +435,14 @@ const deleteUser = asyncHandler(async (req, res) => {
       ]);
     }
 
-    // Verify that the username matches the logged-in user
+    
     if (username !== currentUser.username) {
       throw new ApiError(403, "Unauthorized deletion", [
         { message: "You can only delete your own account" }
       ]);
     }
 
-    // Find and delete the user
+    
     const deletedUser = await User.findByIdAndDelete(currentUser._id);
     if (!deletedUser) {
       throw new ApiError(404, "User not found", [
@@ -468,7 +468,7 @@ const deleteUser = asyncHandler(async (req, res) => {
       }
     });
 
-    // Clear cookies after successful deletion
+    
     return res
       .status(200)
       .clearCookie("accessToken", options)
