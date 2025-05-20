@@ -1,7 +1,6 @@
 import { ApiError } from "../utils/ApiError.js";
 import { User } from "../models/user.model.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
-import emailValidator from "node-email-verifier";
 import jwt from "jsonwebtoken";
 import { asyncHandler } from "../utils/asyncHandler.js";
 
@@ -42,7 +41,6 @@ const generateAccessAndRefereshToken = async (userID) => {
 const registerUser = asyncHandler(async (req, res) => {
   try {
     const { username, email, fullName, password } = req.body;
-   // console.log("Request body:", req.body);
 
     if (!req.body) {
       throw new ApiError(400, "Request body is missing");
@@ -55,14 +53,6 @@ const registerUser = asyncHandler(async (req, res) => {
         { field: "email", message: "Email is required" },
         { field: "username", message: "Username is required" },
         { field: "password", message: "Password is required" }
-      ]);
-    }
-
-    // Email validation
-    const isEmail = await emailValidator(email);
-    if (!isEmail) {
-      throw new ApiError(400, "Invalid email format", [
-        { field: "email", message: "Please enter a valid email address" }
       ]);
     }
 
@@ -147,7 +137,6 @@ const loginUser = asyncHandler(async (req, res) => {
     }
   
     const tokens = await generateAccessAndRefereshToken(user._id);
-   // console.log("Received tokens in login:", tokens);
 
     const loggedInUser = await User.findById(user._id)
       .select("-password -refreshToken");
@@ -374,6 +363,7 @@ const updateAccountDetails = asyncHandler(async (req, res) => {
     }
 
     if (email) {
+      const emailValidator = (await import("node-email-verifier")).default;
       const isEmail = await emailValidator(email);
       if (!isEmail) {
         throw new ApiError(400, "Invalid email", [
