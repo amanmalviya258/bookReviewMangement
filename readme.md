@@ -262,3 +262,212 @@ Run tests using:
 ```bash
 npm test
 ```
+
+##  Design Decisions & Assumptions
+
+### Design Decisions
+
+1. **Separate Review Model**
+   - Reviews are stored in a separate collection instead of being embedded in the Book model
+   - This allows for better scalability and independent review operations
+   - Enables efficient querying and updating of reviews
+
+2. **JWT Authentication**
+   - Chosen over session-based auth for statelessness and scalability
+   - Dual token system (access + refresh) for better security
+   - Access tokens are short-lived (1 day) to minimize security risks
+   - Refresh tokens are long-lived (10 days) for better user experience
+
+3. **Pagination Implementation**
+   - Offset-based pagination instead of cursor-based
+   - Default limit of 10 items per page
+   - Includes total count and total pages in response
+   - Allows for flexible page size through limit parameter
+
+4. **Error Handling**
+   - Centralized error handling with custom error classes
+   - Consistent error response format
+   - Detailed error messages for debugging
+   - Field-level validation errors
+
+5. **Search Implementation**
+   - Case-insensitive search using MongoDB regex
+   - Search across multiple fields (title, author)
+   - Pagination support for search results
+   - No full-text search to keep implementation simple
+
+### Assumptions
+
+1. **User Management**
+   - One user can have multiple reviews
+   - Users can only review a book once
+   - Users can only modify their own reviews
+   - Email addresses are unique
+
+2. **Book Management**
+   - Books can have multiple reviews
+   - Books must have basic information (title, author, genre, description)
+   - Average rating is calculated from all reviews
+   - Books can exist without reviews
+
+3. **Review System**
+   - Ratings are on a scale of 1-5
+   - Reviews must include both rating and comment
+   - Reviews cannot be anonymous
+   - Reviews are immutable once created (can only be updated or deleted)
+
+4. **Performance**
+   - Database will handle up to 100,000 books
+   - Each book can have up to 1000 reviews
+   - Search operations should complete within 1 second
+   - API response time should be under 200ms
+
+##  Database Schema
+
+### Collections
+
+#### Users Collection
+```javascript
+{
+    _id: ObjectId,
+    username: {
+        type: String,
+        required: true,
+        unique: true,
+        lowercase: true,
+        trim: true,
+        index: true
+    },
+    email: {
+        type: String,
+        required: true,
+        unique: true,
+        lowercase: true,
+        trim: true
+    },
+    fullName: {
+        type: String,
+        required: true,
+        trim: true,
+        index: true
+    },
+    password: {
+        type: String,
+        required: true
+    },
+    refreshToken: {
+        type: String
+    },
+    createdAt: {
+        type: Date,
+        default: Date.now
+    },
+    updatedAt: {
+        type: Date,
+        default: Date.now
+    }
+}
+```
+
+#### Books Collection
+```javascript
+{
+    _id: ObjectId,
+    title: {
+        type: String,
+        required: true,
+        trim: true,
+        index: true
+    },
+    author: {
+        type: String,
+        required: true,
+        trim: true,
+        index: true
+    },
+    genre: {
+        type: String,
+        required: true,
+        trim: true,
+        index: true
+    },
+    description: {
+        type: String,
+        required: true,
+        trim: true
+    },
+    reviews: [{
+        type: ObjectId,
+        ref: 'Review'
+    }],
+    averageRating: {
+        type: Number,
+        default: 0
+    },
+    createdAt: {
+        type: Date,
+        default: Date.now
+    },
+    updatedAt: {
+        type: Date,
+        default: Date.now
+    }
+}
+```
+
+#### Reviews Collection
+```javascript
+{
+    _id: ObjectId,
+    user: {
+        type: ObjectId,
+        ref: 'User',
+        required: true,
+        index: true
+    },
+    book: {
+        type: ObjectId,
+        ref: 'Book',
+        required: true,
+        index: true
+    },
+    rating: {
+        type: Number,
+        required: true,
+        min: 1,
+        max: 5
+    },
+    comment: {
+        type: String,
+        required: true,
+        trim: true
+    },
+    createdAt: {
+        type: Date,
+        default: Date.now
+    },
+    updatedAt: {
+        type: Date,
+        default: Date.now
+    }
+}
+```
+
+### Indexes
+- Users: username, email, fullName
+- Books: title, author, genre
+- Reviews: user, book
+- Compound indexes for common queries
+
+### Relationships
+- One-to-Many: User to Reviews
+- One-to-Many: Book to Reviews
+- Many-to-One: Review to User
+- Many-to-One: Review to Book
+
+### Data Validation
+- Required fields are enforced at the schema level
+- Rating range (1-5) is enforced
+- Unique constraints on username and email
+- Trim and lowercase transformations where appropriate
+- Timestamps for auditing
