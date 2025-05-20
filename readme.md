@@ -125,7 +125,7 @@ All API responses follow a consistent format:
 - `error`: Array of error objects (null if no errors)
 - `meta`: Additional metadata including timestamp and other contextual information
 
-### Error Response Format
+## Error Response Format
 
 ```json
 {
