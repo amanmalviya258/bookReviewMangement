@@ -147,7 +147,7 @@ All API responses follow a consistent format:
 }
 ```
 
-## Error Handling
+### Error Handling
 
 The API uses a consistent error handling format:
 - 400: Bad Request (validation errors)
