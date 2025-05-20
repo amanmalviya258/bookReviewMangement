@@ -82,11 +82,11 @@ npm run dev
 - `POST /api/v1/users/change-password` - Change user password [protected route]
 - `GET /api/v1/users/current-user` - Get current user [protected route]
 - `PATCH /api/v1/users/update-account` - Update user's details [protected]
-- `DELETE /api/v1/users/delete` - Delete current user
+- `DELETE /api/v1/users/delete` - Delete current user [protected]
 
 
 ### Books
-- `POST /api/v1/books` - Create a new book (Protected)
+- `POST /api/v1/books` - Create a new book [protected]
 - `GET /api/v1/books` - Get all books (with pagination)
 - `GET /api/v1/books/:id` - Get book by ID
 - `GET /api/v1/books/search` - Search books by title or author
